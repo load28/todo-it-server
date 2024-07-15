@@ -1,1 +1,1 @@
-rootProject.name = "todo-it-servier"
+rootProject.name = "todo-it-server"

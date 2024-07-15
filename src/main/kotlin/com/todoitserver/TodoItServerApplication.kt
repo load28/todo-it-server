@@ -1,11 +1,11 @@
-package com.todoitservier
+package com.todoitserver
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class TodoItServierApplication
+class TodoItServerApplication
 
 fun main(args: Array<String>) {
-    runApplication<TodoItServierApplication>(*args)
+    runApplication<TodoItServerApplication>(*args)
 }
