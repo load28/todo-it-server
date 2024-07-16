@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*
 import java.time.ZonedDateTime
 import java.util.UUID.randomUUID
 
-@DynamoDBTable(tableName = "todos")
+@DynamoDBTable(tableName = "todo")
 data class Todo(
     @DynamoDBHashKey
     @DynamoDBAttribute

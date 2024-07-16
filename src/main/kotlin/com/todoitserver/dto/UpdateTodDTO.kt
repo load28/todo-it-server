@@ -3,14 +3,22 @@ package com.todoitserver.dto
 import java.time.ZonedDateTime
 
 data class TodoUpdateDto(
-    val id: String,
+    val id: String?,
     val content: String,
     val isCompleted: Boolean,
     val action: ActionType
 )
 
 enum class ActionType {
-    ADD, UPDATE, DELETE
+    ADD {
+        val symbol: String = "ADD"
+    },
+    UPDATE {
+        val symbol: String = "UPDATE"
+    },
+    DELETE {
+        val symbol: String = "DELETE"
+    }
 }
 
 data class TodoUpdateRequestDTO(

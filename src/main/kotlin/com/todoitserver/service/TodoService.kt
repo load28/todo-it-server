@@ -11,7 +11,15 @@ import java.time.ZonedDateTime
 class TodoService(private val todoRepository: TodoRepository) {
 
     fun getTodosByDate(date: ZonedDateTime): List<Todo> {
-        return todoRepository.findByDate(date)
+        return try {
+            todoRepository.findByDate(date)
+        } catch (e: Exception) {
+            when (e) {
+                is NoSuchElementException -> emptyList<Todo>()
+                is IllegalArgumentException -> throw IllegalArgumentException("Invalid date format")
+                else -> throw e
+            }
+        }
     }
 
     fun createTodos(todos: List<Todo>): List<Todo> {
@@ -42,18 +50,32 @@ class TodoService(private val todoRepository: TodoRepository) {
 
                 ActionType.UPDATE -> {
                     updateTodo.id.let { id ->
-                        val todo =
-                            todoRepository.findById(id).orElseThrow { IllegalArgumentException("Todo not found") }
-                        todo.content = updateTodo.content
-                        todo.isCompleted = updateTodo.isCompleted
-                        todoRepository.save(todo)
-                        updatedTodos.add(todo)
+                        if (id != null) {
+                            val todo =
+                                todoRepository.findById(id)
+                                    .orElseThrow { IllegalArgumentException("Todo not found") }
+                            todo.content = updateTodo.content
+                            todo.isCompleted = updateTodo.isCompleted
+                            todoRepository.save(todo)
+                            updatedTodos.add(todo)
+                        }
                     }
                 }
 
                 ActionType.DELETE -> {
                     updateTodo.id.let { id ->
-                        todoRepository.deleteById(id)
+                        if (id != null) {
+                            try {
+                                todoRepository.findById(id)
+                                    .orElseThrow { IllegalArgumentException("Todo not found") }
+                                todoRepository.deleteById(id)
+                            } catch (e: Exception) {
+                                when (e) {
+                                    is IllegalArgumentException -> throw IllegalArgumentException("Todo not found")
+                                    else -> throw e
+                                }
+                            }
+                        }
                     }
                 }
             }
