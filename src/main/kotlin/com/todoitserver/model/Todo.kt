@@ -19,14 +19,7 @@ data class Todo(
     @DynamoDBAttribute
     @DynamoDBTypeConverted(converter = ZonedDateTimeConverter::class)
     var date: ZonedDateTime? = null
-) {
-    constructor() : this(
-        id = randomUUID().toString(),
-        content = "",
-        isCompleted = false,
-        date = ZonedDateTime.now()
-    )
-}
+)
 
 class ZonedDateTimeConverter : DynamoDBTypeConverter<String, ZonedDateTime> {
     override fun convert(date: ZonedDateTime): String {

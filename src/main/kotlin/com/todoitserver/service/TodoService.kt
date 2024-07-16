@@ -53,7 +53,7 @@ class TodoService(private val todoRepository: TodoRepository) {
                         if (id != null) {
                             val todo =
                                 todoRepository.findById(id)
-                                    .orElseThrow { IllegalArgumentException("Todo not found") }
+                                    .orElseThrow { IllegalArgumentException("Todo.kt not found") }
                             todo.content = updateTodo.content
                             todo.isCompleted = updateTodo.isCompleted
                             todoRepository.save(todo)
@@ -67,11 +67,11 @@ class TodoService(private val todoRepository: TodoRepository) {
                         if (id != null) {
                             try {
                                 todoRepository.findById(id)
-                                    .orElseThrow { IllegalArgumentException("Todo not found") }
+                                    .orElseThrow { IllegalArgumentException("Todo.kt not found") }
                                 todoRepository.deleteById(id)
                             } catch (e: Exception) {
                                 when (e) {
-                                    is IllegalArgumentException -> throw IllegalArgumentException("Todo not found")
+                                    is IllegalArgumentException -> throw IllegalArgumentException("Todo.kt not found")
                                     else -> throw e
                                 }
                             }
