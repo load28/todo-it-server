@@ -1,7 +1,5 @@
 package com.todoitserver.dto
 
-import java.time.ZonedDateTime
-
 data class TodoUpdateDto(
     val id: String?,
     val content: String,
@@ -23,5 +21,5 @@ enum class ActionType {
 
 data class TodoUpdateRequestDTO(
     val todos: List<TodoUpdateDto>,
-    val date: ZonedDateTime
+    val date: Long
 )

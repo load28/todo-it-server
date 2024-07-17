@@ -5,12 +5,11 @@ import com.todoitserver.dto.TodoUpdateRequestDTO
 import com.todoitserver.model.Todo
 import com.todoitserver.repository.TodoRepository
 import org.springframework.stereotype.Service
-import java.time.ZonedDateTime
 
 @Service
 class TodoService(private val todoRepository: TodoRepository) {
 
-    fun getTodosByDate(date: ZonedDateTime): List<Todo> {
+    fun getTodosByDate(date: Long): List<Todo> {
         return try {
             todoRepository.findByDate(date)
         } catch (e: Exception) {
@@ -85,12 +84,12 @@ class TodoService(private val todoRepository: TodoRepository) {
     }
 
 
-    fun deleteTodoByDate(date: ZonedDateTime) {
+    fun deleteTodoByDate(date: Long) {
         val todos = todoRepository.findByDate(date)
         todoRepository.deleteAll(todos)
     }
 
-    private fun validateTodo(content: String?, date: ZonedDateTime?) {
+    private fun validateTodo(content: String?, date: Long?) {
         if (content.isNullOrEmpty()) {
             throw IllegalArgumentException("Content cannot be blank")
         }

@@ -12,4 +12,6 @@ data class Timezone(
 
     @DynamoDBAttribute
     var timezone: String,
-)
+) {
+    constructor() : this(userId = "", timezone = "")
+}

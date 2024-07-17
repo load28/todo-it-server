@@ -1,7 +1,8 @@
 package com.todoitserver.model
 
-import com.amazonaws.services.dynamodbv2.datamodeling.*
-import java.time.ZonedDateTime
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
 import java.util.UUID.randomUUID
 
 @DynamoDBTable(tableName = "todo")
@@ -17,16 +18,7 @@ data class Todo(
     var isCompleted: Boolean,
 
     @DynamoDBAttribute
-    @DynamoDBTypeConverted(converter = ZonedDateTimeConverter::class)
-    var date: ZonedDateTime? = null
-)
-
-class ZonedDateTimeConverter : DynamoDBTypeConverter<String, ZonedDateTime> {
-    override fun convert(date: ZonedDateTime): String {
-        return date.toString()
-    }
-
-    override fun unconvert(date: String): ZonedDateTime {
-        return ZonedDateTime.parse(date)
-    }
+    var date: Long
+) {
+    constructor() : this(id = randomUUID().toString(), content = "", isCompleted = false, date = 0)
 }

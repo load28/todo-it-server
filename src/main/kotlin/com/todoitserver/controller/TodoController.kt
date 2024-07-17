@@ -3,11 +3,9 @@ package com.todoitserver.controller
 import com.todoitserver.dto.TodoUpdateRequestDTO
 import com.todoitserver.model.Todo
 import com.todoitserver.service.TodoService
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.ZonedDateTime
 
 @RestController
 @RequestMapping("/todo")
@@ -24,12 +22,12 @@ class TodoController(private val todoService: TodoService) {
     }
 
     @GetMapping("/get")
-    fun getTodosByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) date: ZonedDateTime): ResponseEntity<List<Todo>> {
+    fun getTodosByDate(@RequestParam date: Long): ResponseEntity<List<Todo>> {
         return ResponseEntity(todoService.getTodosByDate(date), HttpStatus.OK)
     }
 
     @PostMapping("/delete")
-    fun deleteTodoByDate(@RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) date: ZonedDateTime): ResponseEntity<Unit> {
+    fun deleteTodoByDate(@RequestBody date: Long): ResponseEntity<Unit> {
         todoService.deleteTodoByDate(date)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
