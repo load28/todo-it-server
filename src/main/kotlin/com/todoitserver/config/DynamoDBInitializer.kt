@@ -2,7 +2,7 @@ package com.todoitserver.config
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput
+import com.amazonaws.services.dynamodbv2.model.*
 import com.todoitserver.model.Timezone
 import com.todoitserver.model.Todo
 import jakarta.annotation.PostConstruct
@@ -16,21 +16,35 @@ class DynamoDBInitializer(
 
     @PostConstruct
     fun initialize() {
-        val entityClasses = listOf(Todo::class.java, Timezone::class.java)
-        entityClasses.forEach { createTableIfNotExists(it) }
+        val todoTableRequest = createTableRequestWithGIS(Todo::class.java, "date", "dateIndex")
+        val tzTableRequest = createTableRequest(Timezone::class.java)
+
+        try {
+            amazonDynamoDB.createTable(todoTableRequest)
+            amazonDynamoDB.createTable(tzTableRequest)
+        } catch (e: ResourceInUseException) {
+            println("Table already exists")
+        }
     }
 
-    fun createTableIfNotExists(entityClass: Class<*>) {
+    fun createTableRequest(entityClass: Class<*>): CreateTableRequest {
         val tableRequest = dynamoDBMapper.generateCreateTableRequest(entityClass)
         tableRequest.provisionedThroughput = ProvisionedThroughput(1L, 1L)
+        return tableRequest
+    }
 
-        val tableName = tableRequest.tableName
-        if (!amazonDynamoDB.listTables().tableNames.contains(tableName)) {
-            amazonDynamoDB.createTable(tableRequest)
-            println("Table $tableName created")
-        } else {
-            println("Table $tableName already exists")
-        }
+    fun createTableRequestWithGIS(entityClass: Class<*>, key: String, index: String): CreateTableRequest {
+        val tableRequest = dynamoDBMapper.generateCreateTableRequest(entityClass)
+        tableRequest.provisionedThroughput = ProvisionedThroughput(5L, 5L)
 
+        val gsi = GlobalSecondaryIndex()
+            .withIndexName(index)
+            .withKeySchema(KeySchemaElement(key, KeyType.HASH))
+            .withProjection(Projection().withProjectionType(ProjectionType.ALL))
+            .withProvisionedThroughput(ProvisionedThroughput(5L, 5L))
+
+        tableRequest.setGlobalSecondaryIndexes(listOf(gsi))
+
+        return tableRequest
     }
 }
