@@ -19,8 +19,11 @@ data class Todo(
     var isCompleted: Boolean,
 
     @DynamoDBAttribute
+    var userId: String,
+
+    @DynamoDBAttribute
     @DynamoDBIndexHashKey(globalSecondaryIndexName = "dateIndex")
     var date: Long
 ) {
-    constructor() : this(id = randomUUID().toString(), content = "", isCompleted = false, date = 0)
+    constructor() : this(id = randomUUID().toString(), content = "", isCompleted = false, userId = "", date = 0)
 }

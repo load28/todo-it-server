@@ -22,8 +22,8 @@ class TodoController(private val todoService: TodoService) {
     }
 
     @GetMapping("/get")
-    fun getTodosByDate(@RequestParam date: Long): ResponseEntity<List<Todo>> {
-        return ResponseEntity(todoService.getTodosByDate(date), HttpStatus.OK)
+    fun getTodosByDate(@RequestParam userId: String): ResponseEntity<List<Todo>> {
+        return ResponseEntity(todoService.getTodosByUserId(userId), HttpStatus.OK)
     }
 
     @PostMapping("/delete")

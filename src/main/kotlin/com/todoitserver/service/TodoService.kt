@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service
 @Service
 class TodoService(private val todoRepository: TodoRepository) {
 
-    fun getTodosByDate(date: Long): List<Todo> {
+    fun getTodosByUserId(userId: String): List<Todo> {
         return try {
-            todoRepository.findByDate(date)
+            todoRepository.findByUserId(userId)
         } catch (e: Exception) {
             when (e) {
                 is NoSuchElementException -> emptyList<Todo>()
@@ -39,6 +39,7 @@ class TodoService(private val todoRepository: TodoRepository) {
             when (updateTodo.action) {
                 ActionType.ADD -> {
                     val newTodo = Todo(
+                        userId = updateTodo.userId,
                         content = updateTodo.content,
                         isCompleted = updateTodo.isCompleted,
                         date = date

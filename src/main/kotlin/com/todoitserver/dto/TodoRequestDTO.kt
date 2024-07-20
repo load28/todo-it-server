@@ -4,7 +4,8 @@ data class TodoUpdateDto(
     val id: String?,
     val content: String,
     val isCompleted: Boolean,
-    val action: ActionType
+    val action: ActionType,
+    val userId: String,
 )
 
 enum class ActionType {
