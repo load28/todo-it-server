@@ -21,8 +21,8 @@ class TodoService(private val todoRepository: TodoRepository) {
         }
     }
 
-    fun createTodos(todos: List<Todo>): List<Todo> {
-        todos.forEach { validateTodo(it.content, it.date) }
+    fun createTodos(userId: String, todos: List<Todo>): List<Todo> {
+        todos.forEach { validateTodo(it.content, it.date, it.userId) }
         return todoRepository.saveAll(todos).toList()
     }
 
@@ -32,7 +32,7 @@ class TodoService(private val todoRepository: TodoRepository) {
         val todos = data.todos
 
         for (updateTodo in todos) {
-            validateTodo(updateTodo.content, date)
+            validateTodo(updateTodo.content, date, updateTodo.userId)
         }
 
         for (updateTodo in todos) {
@@ -90,7 +90,11 @@ class TodoService(private val todoRepository: TodoRepository) {
         todoRepository.deleteAll(todos)
     }
 
-    private fun validateTodo(content: String?, date: Long?) {
+    private fun validateTodo(content: String?, date: Long?, userId: String?) {
+        if (userId.isNullOrEmpty()) {
+            throw IllegalArgumentException("User ID cannot be blank")
+        }
+
         if (content.isNullOrEmpty()) {
             throw IllegalArgumentException("Content cannot be blank")
         }

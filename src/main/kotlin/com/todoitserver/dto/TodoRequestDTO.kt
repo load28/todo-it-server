@@ -1,5 +1,7 @@
 package com.todoitserver.dto
 
+import com.todoitserver.model.Todo
+
 data class TodoUpdateDto(
     val id: String?,
     val content: String,
@@ -19,6 +21,11 @@ enum class ActionType {
         val symbol: String = "DELETE"
     }
 }
+
+data class TodoCreateRequestDTO(
+    val todos: List<Todo>,
+    val userId: String
+)
 
 data class TodoUpdateRequestDTO(
     val todos: List<TodoUpdateDto>,

@@ -1,5 +1,6 @@
 package com.todoitserver.controller
 
+import com.todoitserver.dto.TodoCreateRequestDTO
 import com.todoitserver.dto.TodoUpdateRequestDTO
 import com.todoitserver.model.Todo
 import com.todoitserver.service.TodoService
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.*
 class TodoController(private val todoService: TodoService) {
 
     @PostMapping("/create")
-    fun createTodos(@RequestBody todos: List<Todo>): ResponseEntity<List<Todo>> {
-        return ResponseEntity(todoService.createTodos(todos), HttpStatus.CREATED)
+    fun createTodos(@RequestBody data: TodoCreateRequestDTO): ResponseEntity<List<Todo>> {
+        return ResponseEntity(todoService.createTodos(data.userId, data.todos), HttpStatus.CREATED)
     }
 
     @PostMapping("/update")
