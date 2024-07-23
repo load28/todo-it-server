@@ -16,8 +16,8 @@ class DynamoDBInitializer(
 
     @PostConstruct
     fun initialize() {
-        val todoTableRequest = createTableRequestWithGIS(Todo::class.java, "date", "dateIndex")
-        val tzTableRequest = createTableRequest(Timezone::class.java)
+        val todoTableRequest = createTodoTableReqest()
+        val tzTableRequest = createTimezoneTableRequest()
 
         try {
             amazonDynamoDB.createTable(todoTableRequest)
@@ -27,23 +27,30 @@ class DynamoDBInitializer(
         }
     }
 
-    fun createTableRequest(entityClass: Class<*>): CreateTableRequest {
-        val tableRequest = dynamoDBMapper.generateCreateTableRequest(entityClass)
-        tableRequest.provisionedThroughput = ProvisionedThroughput(1L, 1L)
+    fun createTimezoneTableRequest(): CreateTableRequest {
+        val tableRequest = dynamoDBMapper.generateCreateTableRequest(Timezone::class.java)
+        tableRequest.provisionedThroughput = ProvisionedThroughput(5L, 5L)
+
         return tableRequest
     }
 
-    fun createTableRequestWithGIS(entityClass: Class<*>, key: String, index: String): CreateTableRequest {
-        val tableRequest = dynamoDBMapper.generateCreateTableRequest(entityClass)
+    fun createTodoTableReqest(): CreateTableRequest {
+        val tableRequest = dynamoDBMapper.generateCreateTableRequest(Todo::class.java)
         tableRequest.provisionedThroughput = ProvisionedThroughput(5L, 5L)
 
-        val gsi = GlobalSecondaryIndex()
-            .withIndexName(index)
-            .withKeySchema(KeySchemaElement(key, KeyType.HASH))
+        val dateGSI = GlobalSecondaryIndex()
+            .withIndexName("dateIndex")
+            .withKeySchema(KeySchemaElement("date", KeyType.HASH))
+            .withProjection(Projection().withProjectionType(ProjectionType.ALL))
+            .withProvisionedThroughput(ProvisionedThroughput(5L, 5L))
+        
+        val userIdGSI = GlobalSecondaryIndex()
+            .withIndexName("userIdIndex")
+            .withKeySchema(KeySchemaElement("userId", KeyType.HASH))
             .withProjection(Projection().withProjectionType(ProjectionType.ALL))
             .withProvisionedThroughput(ProvisionedThroughput(5L, 5L))
 
-        tableRequest.setGlobalSecondaryIndexes(listOf(gsi))
+        tableRequest.setGlobalSecondaryIndexes(listOf(dateGSI, userIdGSI))
 
         return tableRequest
     }

@@ -19,6 +19,7 @@ data class Todo(
     var isCompleted: Boolean,
 
     @DynamoDBAttribute
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "userIdIndex")
     var userId: String,
 
     @DynamoDBAttribute
