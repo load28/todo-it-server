@@ -16,7 +16,7 @@ class DynamoDBInitializer(
 
     @PostConstruct
     fun initialize() {
-        val todoTableRequest = createTodoTableReqest()
+        val todoTableRequest = createTodoTableRequest()
         val tzTableRequest = createTimezoneTableRequest()
 
         try {
@@ -34,7 +34,7 @@ class DynamoDBInitializer(
         return tableRequest
     }
 
-    fun createTodoTableReqest(): CreateTableRequest {
+    fun createTodoTableRequest(): CreateTableRequest {
         val tableRequest = dynamoDBMapper.generateCreateTableRequest(Todo::class.java)
         tableRequest.provisionedThroughput = ProvisionedThroughput(5L, 5L)
 
@@ -43,7 +43,7 @@ class DynamoDBInitializer(
             .withKeySchema(KeySchemaElement("date", KeyType.HASH))
             .withProjection(Projection().withProjectionType(ProjectionType.ALL))
             .withProvisionedThroughput(ProvisionedThroughput(5L, 5L))
-        
+
         val userIdGSI = GlobalSecondaryIndex()
             .withIndexName("userIdIndex")
             .withKeySchema(KeySchemaElement("userId", KeyType.HASH))
