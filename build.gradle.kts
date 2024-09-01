@@ -26,6 +26,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.cloud:spring-cloud-function-web")
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.12.261")
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.4")
     implementation("io.github.boostchicken:spring-data-dynamodb:5.2.5")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
