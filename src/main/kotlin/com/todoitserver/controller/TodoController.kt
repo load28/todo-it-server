@@ -4,6 +4,7 @@ import com.todoitserver.dto.TodoCreateRequestDTO
 import com.todoitserver.dto.TodoUpdateRequestDTO
 import com.todoitserver.model.Todo
 import com.todoitserver.service.TodoService
+import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/todo")
 class TodoController(private val todoService: TodoService) {
+    companion object : Logging
 
     @PostMapping("/create")
     fun createTodos(@RequestBody data: TodoCreateRequestDTO): ResponseEntity<List<Todo>> {
