@@ -3,10 +3,9 @@ package com.todoitserver.service
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.GetItemRequest
-import com.google.api.client.util.Value
 import com.google.auth.oauth2.TokenVerifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.util.*
 
 // 사용자 정보 데이터를 담을 클래스
 data class GoogleUserInfo(
@@ -18,15 +17,11 @@ data class GoogleUserInfo(
 
 @Service
 class AuthService(private val amazonDynamoDB: AmazonDynamoDB) {
-    @Value("\${google_clientId}")
+    @Value("\${google.clientId}")
     private lateinit var googleClientId: String
 
-    private val tokenVerifier = TokenVerifier.newBuilder()
-        .setAudience(Collections.singletonList(googleClientId).toString())
-        .build()
-
     fun verifyGoogleToken(token: String): GoogleUserInfo? {
-        var userInfo = getGoogleUserInfo(token)
+        val userInfo = getGoogleUserInfo(token)
 
         if (userInfo != null && isUserSignUp(userInfo.id)) {
             return userInfo
@@ -37,11 +32,13 @@ class AuthService(private val amazonDynamoDB: AmazonDynamoDB) {
 
     private fun getGoogleUserInfo(token: String): GoogleUserInfo? {
         try {
+            val tokenVerifier = TokenVerifier.newBuilder()
+                .setAudience(googleClientId)
+                .build()
             val googleToken = tokenVerifier.verify(token)
-
             val email = googleToken.payload["email"] as String
             val name = googleToken.payload["name"] as String
-            val id = googleToken.payload["id"] as String
+            val id = googleToken.payload["sub"] as String
             val pictureUrl = googleToken.payload["picture"] as String
 
             return GoogleUserInfo(id, email, name, pictureUrl)

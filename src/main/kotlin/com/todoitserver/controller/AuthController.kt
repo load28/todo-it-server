@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 data class GoogleLoginRequest(val token: String)
+data class SuccessResponse<T>(val data: T)
+data class ErrorResponse(val message: String)
 
 @RestController
 @RequestMapping("/auth")
@@ -17,9 +19,11 @@ class AuthController(private val authService: AuthService) {
     fun googleLogin(@RequestBody request: GoogleLoginRequest): ResponseEntity<Any> {
         val userInfo = authService.verifyGoogleToken(request.token)
         if (userInfo != null) {
-            return ResponseEntity.ok(userInfo)
+            val successResponse = SuccessResponse(userInfo)
+            return ResponseEntity(successResponse, HttpStatus.OK)
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not found user")
+            val errorResponse = ErrorResponse("Not found user")
+            return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
         }
     }
 }
