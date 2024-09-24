@@ -23,7 +23,7 @@ class AuthController(private val authService: AuthService) {
             return ResponseEntity(successResponse, HttpStatus.OK)
         } else {
             val errorResponse = ErrorResponse("Not found user")
-            return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
+            return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
         }
     }
 }
